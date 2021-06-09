@@ -1,0 +1,38 @@
+CREATE TABLE if not exists stock (ID integer primary key, shopID Integer , markID Integer, quantity integer);
+CREATE TABLE if not exists shop (ID integer primary key references stock(shopID), name VARCHAR );
+CREATE TABLE if not exists mark (ID integer primary key references stock(markID), name VARCHAR, manufacturerID INteger );
+CREATE TABLE if not exists manufacturer (ID integer primary key references mark(manufacturerID), name VARCHAR, country VARCHAR );
+
+SELECT Manufacturer.name, Mark.name, Shop.name, Stock.quantity 
+FROM Manufacturer 
+JOIN Mark ON Mark.manufacturerID = Manufacturer.ID
+JOIN Stock ON Stock.markID = Mark.ID
+JOIN Shop ON Shop.ID = Stock.shopID
+GROUP BY Manufacturer.name, Shop.name
+ORDER BY SUM(Stock.quantity);
+
+SELECT Shop.name, COUNT(Stock.quantity)
+FROM Shop
+JOIN Stock ON Stock.shopID = Shop.ID
+JOIN Mark ON mark.ID = Stock.markID
+JOIN Manufacturer ON Mark.manufacturerID = Manufacturer.ID
+WHERE Manufacturer.country LIKE '%%{JAP}%%' ;
+
+SELECT Mark.name, Manufacturer.name
+FROM Mark
+JOIN Manufacturer ON Mark.manufacturerID = Manufacturer.ID
+EXCEPT 
+SELECT Mark.name 
+FROM Mark
+JOIN Stock ON Stock.markID = ON Mark.ID
+WHERE Stock.quantity > 0 ;
+
+SELECT Mark.name, Shop.name 
+FROM Mark
+JOIN Stock ON Stock.markID = Mark.ID
+JOIN Shop ON Shop.ID =  Stock.shopID
+WHERE Stock.quantity > 10
+HAVING MAX(quantity) = (SELECT MAX(quantity) FROM Stock)
+ORDER BY Stock.quantity DESC , Shop.name DESC ;
+
+
