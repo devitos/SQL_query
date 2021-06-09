@@ -1,7 +1,7 @@
-CREATE TABLE if not exists stock (ID integer primary key, shopID Integer , markID Integer, quantity integer);
-CREATE TABLE if not exists shop (ID integer primary key references stock(shopID), name VARCHAR );
-CREATE TABLE if not exists mark (ID integer primary key references stock(markID), name VARCHAR, manufacturerID INteger );
-CREATE TABLE if not exists manufacturer (ID integer primary key references mark(manufacturerID), name VARCHAR, country VARCHAR );
+CREATE TABLE if not exists shop (ID serial primary key, name VARCHAR(20) );
+CREATE TABLE if not exists manufacturer (ID serial primary key, name VARCHAR(20), country VARCHAR(4) );
+CREATE TABLE if not exists mark (ID serial primary key, name VARCHAR(20), manufacturerID integer references manufacturer(ID) );
+CREATE TABLE if not exists stock (ID serial primary key, shopID Integer references shop(ID), markID Integer references Mark(ID), quantity integer);
 
 SELECT Manufacturer.name, Mark.name, Shop.name, Stock.quantity 
 FROM Manufacturer 
@@ -34,5 +34,3 @@ JOIN Shop ON Shop.ID =  Stock.shopID
 WHERE Stock.quantity > 10
 HAVING MAX(quantity) = (SELECT MAX(quantity) FROM Stock)
 ORDER BY Stock.quantity DESC , Shop.name DESC ;
-
-
